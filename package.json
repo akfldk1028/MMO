@@ -1,0 +1,16 @@
+{
+  "name": "mmo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --recursive build",
+    "dev:mcp": "pnpm --dir apps/mmo-mcp dev",
+    "test": "pnpm --recursive test"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@9.15.9"
+}
+

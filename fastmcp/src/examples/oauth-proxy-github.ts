@@ -1,0 +1,55 @@
+/**
+ * Example FastMCP server with GitHub OAuth
+ *
+ * This example shows how to use GitHub as the OAuth provider
+ * with the simplified auth configuration.
+ *
+ * Run with: node dist/examples/oauth-proxy-github.js
+ */
+
+import { getAuthSession, GitHubProvider, requireAuth } from "../auth/index.js";
+import { FastMCP } from "../FastMCP.js";
+
+// Create FastMCP server with GitHub OAuth
+const server = new FastMCP({
+  auth: new GitHubProvider({
+    baseUrl: "http://localhost:4201",
+    clientId: process.env.GITHUB_CLIENT_ID || "your-github-client-id",
+    clientSecret:
+      process.env.GITHUB_CLIENT_SECRET || "your-github-client-secret",
+    scopes: ["read:user", "user:email"],
+  }),
+  name: "GitHub OAuth Server",
+  version: "1.0.0",
+});
+
+server.addTool({
+  canAccess: requireAuth, // Only visible to authenticated users
+  description: "Get GitHub repositories for authenticated user",
+  execute: async (_, { session }) => {
+    const { accessToken } = getAuthSession(session);
+    return {
+      content: [
+        {
+          text: `Authenticated! Token starts with: ${accessToken.slice(0, 8)}...`,
+          type: "text" as const,
+        },
+      ],
+    };
+  },
+  name: "get-repositories",
+});
+
+await server.start({
+  httpStream: { port: 4201 },
+  transportType: "httpStream",
+});
+
+console.log(`
+🚀 GitHub OAuth Server is running on http://localhost:4201
+
+OAuth Provider: GitHub
+Callback URL: http://localhost:4201/oauth/callback
+
+Make sure to configure this callback URL in your GitHub OAuth App settings.
+`);
