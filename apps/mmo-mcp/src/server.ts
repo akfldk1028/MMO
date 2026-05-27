@@ -1,13 +1,16 @@
+import { createMmoModule } from "@mmo/core";
 import { FastMCP } from "fastmcp";
 
-import { registerMemoryTools } from "./tools/memory.js";
+import { registerMmoTools } from "./tools/index.js";
 
 const server = new FastMCP({
   name: "MMO",
   version: "0.1.0",
 });
 
-registerMemoryTools(server);
+const mmo = createMmoModule();
+
+registerMmoTools(server, mmo);
 
 await server.start({
   httpStream: {

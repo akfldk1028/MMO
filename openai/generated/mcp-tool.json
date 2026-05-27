@@ -1,0 +1,5 @@
+{
+  "server_label": "mmo",
+  "server_url": "http://localhost:3030/mcp",
+  "type": "mcp"
+}

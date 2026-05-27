@@ -1,39 +1,8 @@
-import { randomUUID } from "node:crypto";
+import type { MmoModule } from "@mmo/core";
 import type { FastMCP } from "fastmcp";
 import { z } from "zod";
 
-type MemoryRecord = {
-  content: string;
-  createdAt: string;
-  id: string;
-  tags: string[];
-  title: string;
-};
-
-const memories = new Map<string, MemoryRecord>();
-
-const scoreMemory = (memory: MemoryRecord, query: string) => {
-  const terms = query
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean);
-  const haystack = `${memory.title} ${memory.content} ${memory.tags.join(" ")}`.toLowerCase();
-
-  return terms.reduce((score, term) => {
-    return haystack.includes(term) ? score + 1 : score;
-  }, 0);
-};
-
-const findMemories = (query: string, limit: number) => {
-  return [...memories.values()]
-    .map((memory) => ({ memory, score: scoreMemory(memory, query) }))
-    .filter(({ score }) => score > 0 || query.trim() === "")
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(({ memory }) => memory);
-};
-
-export const registerMemoryTools = (server: FastMCP) => {
+export const registerMemoryTools = (server: FastMCP, mmo: MmoModule) => {
   server.addTool({
     name: "remember",
     description: "Use this to store durable business context, facts, preferences, decisions, or operating rules for later recall.",
@@ -43,15 +12,7 @@ export const registerMemoryTools = (server: FastMCP) => {
       title: z.string().min(1).describe("A short human-readable title for this memory."),
     }),
     execute: async (args: { content: string; tags: string[]; title: string }) => {
-      const memory: MemoryRecord = {
-        content: args.content,
-        createdAt: new Date().toISOString(),
-        id: randomUUID(),
-        tags: args.tags,
-        title: args.title,
-      };
-
-      memories.set(memory.id, memory);
+      const memory = mmo.memory.create(args);
 
       return JSON.stringify({
         id: memory.id,
@@ -69,7 +30,7 @@ export const registerMemoryTools = (server: FastMCP) => {
     }),
     execute: async (args: { limit: number; query: string }) => {
       return JSON.stringify({
-        memories: findMemories(args.query, args.limit),
+        memories: mmo.memory.recall(args.query, args.limit),
       });
     },
   });
@@ -81,14 +42,9 @@ export const registerMemoryTools = (server: FastMCP) => {
       query: z.string().describe("Search query."),
     }),
     execute: async (args: { query: string }) => {
-      const results = findMemories(args.query, 10).map((memory) => ({
-        id: memory.id,
-        text: memory.content.slice(0, 500),
-        title: memory.title,
-        url: `memory://${memory.id}`,
-      }));
-
-      return JSON.stringify({ results });
+      return JSON.stringify({
+        results: mmo.memory.search(args.query),
+      });
     },
   });
 
@@ -99,7 +55,7 @@ export const registerMemoryTools = (server: FastMCP) => {
       id: z.string().describe("Memory id returned by search."),
     }),
     execute: async (args: { id: string }) => {
-      const memory = memories.get(args.id);
+      const memory = mmo.memory.fetch(args.id);
 
       if (!memory) {
         return JSON.stringify({

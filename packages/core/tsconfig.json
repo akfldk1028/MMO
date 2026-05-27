@@ -1,0 +1,12 @@
+{
+  "extends": "../../fastmcp/tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "rootDir": "src",
+    "strict": true
+  },
+  "include": ["src/**/*.ts"]
+}
+
