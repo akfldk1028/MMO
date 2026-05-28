@@ -1,0 +1,12 @@
+{
+  "app_name": "MMO",
+  "description": "Business memory and workflow MCP module for ChatGPT normal chats, company knowledge, and deep research.",
+  "mcp_server_url": "http://localhost:3030/mcp",
+  "recommended_tools": [
+    "search",
+    "fetch",
+    "remember",
+    "recall"
+  ],
+  "setup": "Create a custom MCP app/connector in ChatGPT developer mode, provide this endpoint, scan tools, then publish or enable for the workspace."
+}

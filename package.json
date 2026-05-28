@@ -7,6 +7,7 @@
     "build": "pnpm --recursive build",
     "dev:mcp": "pnpm --dir apps/mmo-mcp dev",
     "generate:configs": "node scripts/generate-configs.mjs",
+    "mmo:doctor": "node scripts/check-integration-readiness.mjs",
     "mmo:build": "pnpm --dir fastmcp build && pnpm --dir packages/core build && pnpm --dir apps/mmo-mcp build && pnpm package:claude-skill && pnpm generate:configs",
     "package:claude-skill": "node scripts/package-claude-skill.mjs",
     "test": "pnpm --recursive test"

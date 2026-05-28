@@ -26,3 +26,19 @@ MMO should remain client-neutral:
 - Skills are workflow/instruction packages.
 - Apps SDK UI is added only when ChatGPT needs an interactive surface.
 
+## Surface Contract
+
+Every user-facing integration should point back to one shared module:
+
+```txt
+packages/core
+  -> apps/mmo-mcp
+  -> ChatGPT custom MCP app
+  -> OpenAI API MCP tool
+  -> Claude custom connector
+  -> Claude API MCP connector
+  -> Claude Skill workflow package
+```
+
+Do not fork business logic per client. Add client-specific behavior only in adapters, generated configs, or skill instructions.
+

@@ -1,0 +1,11 @@
+{
+  "connector_name": "MMO",
+  "mcp_server_url": "http://localhost:3030/mcp",
+  "supported_paths": [
+    "Claude custom connector",
+    "Claude API MCP connector",
+    "Claude Desktop or Claude Code MCP setup where supported",
+    "Claude Skill workflow package"
+  ],
+  "skill_source": "skills/claude/mmo-business-memory"
+}

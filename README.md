@@ -9,8 +9,8 @@ MMO is built as one product module:
 ```txt
 @mmo/core
   -> apps/mmo-mcp
-  -> OpenAI MCP config
-  -> Anthropic MCP config
+  -> ChatGPT custom MCP app / OpenAI MCP config
+  -> Claude custom connector / Anthropic MCP config
   -> Claude Skill package
 ```
 
@@ -21,6 +21,12 @@ pnpm mmo:build
 ```
 
 That command builds the vendored FastMCP framework, type-checks MMO core and MCP server, packages the Claude Skill, and generates OpenAI/Anthropic MCP config files.
+
+Check whether the integrated surface files exist:
+
+```bash
+pnpm mmo:doctor
+```
 
 ## Structure
 
@@ -51,3 +57,12 @@ pnpm dev:mcp
 ```bash
 pnpm mmo:build
 ```
+
+## Target Surfaces
+
+- ChatGPT normal chat: install MMO as a custom MCP app/connector in ChatGPT developer mode, then select it from the ChatGPT tools/apps menu.
+- ChatGPT company knowledge/deep research: use MMO `search` and `fetch` tools.
+- OpenAI API: use the generated MCP tool config in `openai/generated/mcp-tool.json`.
+- Claude normal chat: add MMO as a Claude custom connector using the remote MCP endpoint.
+- Claude API: use the generated connector config in `anthropic/generated/mcp-connector.json`.
+- Claude Skills: package `skills/claude/mmo-business-memory` with `pnpm package:claude-skill`.
